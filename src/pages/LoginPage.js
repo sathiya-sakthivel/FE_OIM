@@ -26,12 +26,15 @@ const LoginPage = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/login", {
-        username,
-        password,
-        branch,
-        role,
-      });
+      const response = await axios.post(
+        "https://orderinventorymanagementbackend-production-d72d.up.railway.app/login",
+        {
+          username,
+          password,
+          branch,
+          role,
+        }
+      );
       localStorage.setItem("token", response.data.token);
       localStorage.setItem("username", username);
       localStorage.setItem("userRole", role);
@@ -126,9 +129,21 @@ const LoginPage = () => {
             onChange: handleInputChange,
           },
           React.createElement("option", { value: "" }, "Select Branch"),
-          React.createElement("option", { value: "Main Branch" }, "Main Branch"),
-          React.createElement("option", { value: "City Branch" }, "City Branch"),
-          React.createElement("option", { value: "Downtown Branch" }, "Downtown Branch")
+          React.createElement(
+            "option",
+            { value: "Main Branch" },
+            "Main Branch"
+          ),
+          React.createElement(
+            "option",
+            { value: "City Branch" },
+            "City Branch"
+          ),
+          React.createElement(
+            "option",
+            { value: "Downtown Branch" },
+            "Downtown Branch"
+          )
         ),
         React.createElement(
           "select",

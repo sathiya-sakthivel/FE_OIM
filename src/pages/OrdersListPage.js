@@ -7,9 +7,12 @@ const OrdersListPage = () => {
 
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/orders", {
-        params: { customer_name: username },
-      });
+      const res = await axios.get(
+        "https://orderinventorymanagementbackend-production-d72d.up.railway.app/orders",
+        {
+          params: { customer_name: username },
+        }
+      );
       setOrders(res.data);
     } catch (err) {
       console.error("Error fetching orders:", err);

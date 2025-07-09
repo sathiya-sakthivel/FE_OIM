@@ -11,7 +11,9 @@ const OrderPage = () => {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/inventory");
+      const res = await axios.get(
+        "https://orderinventorymanagementbackend-production-d72d.up.railway.app/inventory"
+      );
       setProducts(res.data);
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -25,7 +27,9 @@ const OrderPage = () => {
       return;
     }
     if (quantity > product.quantity) {
-      alert(`Only ${product.quantity} units of ${product.item_name} available.`);
+      alert(
+        `Only ${product.quantity} units of ${product.item_name} available.`
+      );
       return;
     }
     setCart((prev) => [...prev, { ...product, quantity }]);
@@ -33,7 +37,9 @@ const OrderPage = () => {
 
   const placeOrder = async () => {
     if (!customerName || cart.length === 0) {
-      alert("Please ensure you are logged in and have added items to the cart.");
+      alert(
+        "Please ensure you are logged in and have added items to the cart."
+      );
       return;
     }
 
@@ -41,7 +47,11 @@ const OrderPage = () => {
     for (const item of cart) {
       const inventoryItem = products.find((p) => p.id === item.id);
       if (!inventoryItem || inventoryItem.quantity < item.quantity) {
-        alert(`Insufficient stock for ${item.item_name}. Available: ${inventoryItem?.quantity || 0}`);
+        alert(
+          `Insufficient stock for ${item.item_name}. Available: ${
+            inventoryItem?.quantity || 0
+          }`
+        );
         return;
       }
     }
@@ -59,7 +69,10 @@ const OrderPage = () => {
 
     try {
       // Place order
-      const orderResponse = await axios.post("http://localhost:5000/orders", orderData);
+      const orderResponse = await axios.post(
+        "https://orderinventorymanagementbackend-production-d72d.up.railway.app/orders",
+        orderData
+      );
       console.log("Order response:", orderResponse.data);
 
       // Update inventory quantities
@@ -73,15 +86,25 @@ const OrderPage = () => {
           throw new Error(`Negative quantity for ${item.item_name}`);
         }
         try {
-          await axios.put(`http://localhost:5000/inventory/${item.id}`, {
-            item_name: item.item_name,
-            quantity: newQuantity,
-            supplier_name: item.supplier_name,
-            price: item.price,
-          });
+          await axios.put(
+            `https://orderinventorymanagementbackend-production-d72d.up.railway.app/inventory/${item.id}`,
+            {
+              item_name: item.item_name,
+              quantity: newQuantity,
+              supplier_name: item.supplier_name,
+              price: item.price,
+            }
+          );
         } catch (err) {
-          console.error(`Failed to update inventory for ${item.item_name}:`, err);
-          alert(`Failed to update inventory for ${item.item_name}: ${err.response?.data?.error || err.message}`);
+          console.error(
+            `Failed to update inventory for ${item.item_name}:`,
+            err
+          );
+          alert(
+            `Failed to update inventory for ${item.item_name}: ${
+              err.response?.data?.error || err.message
+            }`
+          );
           return;
         }
       }
@@ -90,8 +113,13 @@ const OrderPage = () => {
       setCart([]);
       fetchProducts();
     } catch (err) {
-      console.error("Failed to place order:", err.response?.data || err.message);
-      alert("Failed to place order: " + (err.response?.data?.error || err.message));
+      console.error(
+        "Failed to place order:",
+        err.response?.data || err.message
+      );
+      alert(
+        "Failed to place order: " + (err.response?.data?.error || err.message)
+      );
     }
   };
 
@@ -222,7 +250,9 @@ const OrderPage = () => {
               React.createElement(
                 "li",
                 { key: index },
-                `${item.item_name} × ${item.quantity} = ₹${item.quantity * item.price}`
+                `${item.item_name} × ${item.quantity} = ₹${
+                  item.quantity * item.price
+                }`
               )
             )
           ),

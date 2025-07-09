@@ -27,19 +27,30 @@ const RegisterPage = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/register", {
-        username,
-        email,
-        password,
-        branch,
-        role,
-      });
+      const response = await axios.post(
+        "https://orderinventorymanagementbackend-production-d72d.up.railway.app/register",
+        {
+          username,
+          email,
+          password,
+          branch,
+          role,
+        }
+      );
       alert(response.data.message);
-      setFormData({ username: "", email: "", password: "", branch: "", role: "" });
+      setFormData({
+        username: "",
+        email: "",
+        password: "",
+        branch: "",
+        role: "",
+      });
       navigate("/login");
     } catch (err) {
       console.error("Registration error:", err);
-      alert("Failed to register: " + (err.response?.data?.error || err.message));
+      alert(
+        "Failed to register: " + (err.response?.data?.error || err.message)
+      );
     }
   };
 
@@ -131,9 +142,21 @@ const RegisterPage = () => {
             onChange: handleInputChange,
           },
           React.createElement("option", { value: "" }, "Select Branch"),
-          React.createElement("option", { value: "Main Branch" }, "Main Branch"),
-          React.createElement("option", { value: "City Branch" }, "City Branch"),
-          React.createElement("option", { value: "Downtown Branch" }, "Downtown Branch")
+          React.createElement(
+            "option",
+            { value: "Main Branch" },
+            "Main Branch"
+          ),
+          React.createElement(
+            "option",
+            { value: "City Branch" },
+            "City Branch"
+          ),
+          React.createElement(
+            "option",
+            { value: "Downtown Branch" },
+            "Downtown Branch"
+          )
         ),
         React.createElement(
           "select",

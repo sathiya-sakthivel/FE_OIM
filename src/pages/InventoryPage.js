@@ -14,7 +14,9 @@ const InventoryPage = () => {
 
   const fetchInventory = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/inventory");
+      const res = await axios.get(
+        "https://orderinventorymanagementbackend-production-d72d.up.railway.app/inventory"
+      );
       setInventory(res.data);
     } catch (err) {
       console.error("Error fetching inventory:", err);
@@ -38,28 +40,41 @@ const InventoryPage = () => {
 
     try {
       if (editingId) {
-        await axios.put(`http://localhost:5000/inventory/${editingId}`, {
-          item_name,
-          quantity: parseInt(quantity),
-          supplier_name,
-          price: parseFloat(price),
-        });
+        await axios.put(
+          `https://orderinventorymanagementbackend-production-d72d.up.railway.app/inventory/${editingId}`,
+          {
+            item_name,
+            quantity: parseInt(quantity),
+            supplier_name,
+            price: parseFloat(price),
+          }
+        );
         alert("Item updated successfully!");
       } else {
-        await axios.post("http://localhost:5000/inventory", {
-          item_name,
-          quantity: parseInt(quantity),
-          supplier_name,
-          price: parseFloat(price),
-        });
+        await axios.post(
+          "https://orderinventorymanagementbackend-production-d72d.up.railway.app/inventory",
+          {
+            item_name,
+            quantity: parseInt(quantity),
+            supplier_name,
+            price: parseFloat(price),
+          }
+        );
         alert("Item added successfully!");
       }
-      setFormData({ item_name: "", quantity: "", supplier_name: "", price: "" });
+      setFormData({
+        item_name: "",
+        quantity: "",
+        supplier_name: "",
+        price: "",
+      });
       setEditingId(null);
       fetchInventory();
     } catch (err) {
       console.error("Error saving item:", err);
-      alert("Failed to save item: " + (err.response?.data?.error || err.message));
+      alert(
+        "Failed to save item: " + (err.response?.data?.error || err.message)
+      );
     }
   };
 
@@ -73,8 +88,6 @@ const InventoryPage = () => {
     setEditingId(item.id);
   };
 
-  
-
   const handleRequest = async (item) => {
     const quantity = prompt(`Enter quantity to request for ${item.item_name}:`);
     if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
@@ -82,16 +95,21 @@ const InventoryPage = () => {
       return;
     }
     try {
-      await axios.post("http://localhost:5000/inventory/request", {
-        item_id: item.id,
-        item_name: item.item_name,
-        quantity: parseInt(quantity),
-        branch: localStorage.getItem("branch"),
-      });
+      await axios.post(
+        "https://orderinventorymanagementbackend-production-d72d.up.railway.app/inventory/request",
+        {
+          item_id: item.id,
+          item_name: item.item_name,
+          quantity: parseInt(quantity),
+          branch: localStorage.getItem("branch"),
+        }
+      );
       alert(`Request for ${quantity} units of ${item.item_name} submitted!`);
     } catch (err) {
       console.error("Error requesting item:", err);
-      alert("Failed to request item: " + (err.response?.data?.error || err.message));
+      alert(
+        "Failed to request item: " + (err.response?.data?.error || err.message)
+      );
     }
   };
 
@@ -106,28 +124,37 @@ const InventoryPage = () => {
       return;
     }
     try {
-      await axios.put(`http://localhost:5000/inventory/${item.id}`, {
-        item_name: item.item_name,
-        quantity: item.quantity - parseInt(quantity),
-        supplier_name: item.supplier_name,
-        price: item.price,
-      });
+      await axios.put(
+        `https://orderinventorymanagementbackend-production-d72d.up.railway.app/inventory/${item.id}`,
+        {
+          item_name: item.item_name,
+          quantity: item.quantity - parseInt(quantity),
+          supplier_name: item.supplier_name,
+          price: item.price,
+        }
+      );
       alert(`Issued ${quantity} units of ${item.item_name} successfully!`);
       fetchInventory();
     } catch (err) {
       console.error("Error issuing item:", err);
-      alert("Failed to issue item: " + (err.response?.data?.error || err.message));
+      alert(
+        "Failed to issue item: " + (err.response?.data?.error || err.message)
+      );
     }
   };
 
   const handleTransfer = async (item) => {
-    const quantity = prompt(`Enter quantity to transfer for ${item.item_name}:`);
+    const quantity = prompt(
+      `Enter quantity to transfer for ${item.item_name}:`
+    );
     if (!quantity || isNaN(quantity) || parseInt(quantity) <= 0) {
       alert("Please enter a valid quantity.");
       return;
     }
     if (parseInt(quantity) > item.quantity) {
-      alert(`Cannot transfer ${quantity} units. Only ${item.quantity} available.`);
+      alert(
+        `Cannot transfer ${quantity} units. Only ${item.quantity} available.`
+      );
       return;
     }
     const targetBranch = prompt(
@@ -142,24 +169,34 @@ const InventoryPage = () => {
       return;
     }
     try {
-      await axios.post("http://localhost:5000/inventory/transfer", {
-        item_id: item.id,
-        item_name: item.item_name,
-        quantity: parseInt(quantity),
-        from_branch: localStorage.getItem("branch"),
-        to_branch: targetBranch,
-      });
-      await axios.put(`http://localhost:5000/inventory/${item.id}`, {
-        item_name: item.item_name,
-        quantity: item.quantity - parseInt(quantity),
-        supplier_name: item.supplier_name,
-        price: item.price,
-      });
-      alert(`Transferred ${quantity} units of ${item.item_name} to ${targetBranch} successfully!`);
+      await axios.post(
+        "https://orderinventorymanagementbackend-production-d72d.up.railway.app/inventory/transfer",
+        {
+          item_id: item.id,
+          item_name: item.item_name,
+          quantity: parseInt(quantity),
+          from_branch: localStorage.getItem("branch"),
+          to_branch: targetBranch,
+        }
+      );
+      await axios.put(
+        `https://orderinventorymanagementbackend-production-d72d.up.railway.app/inventory/${item.id}`,
+        {
+          item_name: item.item_name,
+          quantity: item.quantity - parseInt(quantity),
+          supplier_name: item.supplier_name,
+          price: item.price,
+        }
+      );
+      alert(
+        `Transferred ${quantity} units of ${item.item_name} to ${targetBranch} successfully!`
+      );
       fetchInventory();
     } catch (err) {
       console.error("Error transferring item:", err);
-      alert("Failed to transfer item: " + (err.response?.data?.error || err.message));
+      alert(
+        "Failed to transfer item: " + (err.response?.data?.error || err.message)
+      );
     }
   };
 
@@ -346,10 +383,13 @@ const InventoryPage = () => {
                       { className: "edit", onClick: () => handleEdit(item) },
                       "Edit"
                     ),
-                    
+
                     React.createElement(
                       "button",
-                      { className: "request", onClick: () => handleRequest(item) },
+                      {
+                        className: "request",
+                        onClick: () => handleRequest(item),
+                      },
                       "Request"
                     ),
                     React.createElement(
@@ -359,7 +399,10 @@ const InventoryPage = () => {
                     ),
                     React.createElement(
                       "button",
-                      { className: "transfer", onClick: () => handleTransfer(item) },
+                      {
+                        className: "transfer",
+                        onClick: () => handleTransfer(item),
+                      },
                       "Transfer"
                     )
                   )
